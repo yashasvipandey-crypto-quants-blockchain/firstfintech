@@ -607,7 +607,3 @@ B.Tech Mathematics and Computing
 FinTech, Machine Learning, Explainable AI, and Stock Intelligence
 
 ---
-
-## License
-
-No license file is currently included in this repository. Add a license before distributing or accepting external contributions.
