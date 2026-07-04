@@ -1,0 +1,430 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIDUCIA - Stock Trust Predictor Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-gradient bg-gradient-1"></div>
+    <div class="bg-gradient bg-gradient-2"></div>
+    <div class="bg-gradient bg-gradient-3"></div>
+    <div class="grain-overlay"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar glass-effect">
+        <div class="nav-container">
+            <a class="nav-brand" href="/" aria-label="Go to Fiducia home page">
+                <svg class="brand-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="32" height="32" rx="10" fill="url(#brandGradient)"></rect>
+                    <path d="M16 8L20 12L16 16L12 12L16 8Z" fill="white" opacity="0.9"></path>
+                    <path d="M16 16L20 20L16 24L12 20L16 16Z" fill="white" opacity="0.7"></path>
+                    <defs>
+                        <linearGradient id="brandGradient" x1="0" y1="0" x2="32" y2="32">
+                            <stop offset="0%" stop-color="#667eea"></stop>
+                            <stop offset="100%" stop-color="#764ba2"></stop>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="brand-text">
+                    <span class="brand-name">FIDUCIA</span>
+                    <span class="brand-tagline">Trust Engine</span>
+                </div>
+            </a>
+            
+            <div class="nav-search glass-subtle">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="M21 21l-4.35-4.35"></path>
+                </svg>
+                <select id="stock-dropdown">
+                    <option value="RELIANCE.NS">Reliance Industries (RELIANCE.NS)</option>
+                    <option value="HDFCBANK.NS">HDFC Bank (HDFCBANK.NS)</option>
+                </select>
+            </div>
+
+            <div class="nav-status">
+                <div class="status-badge glass-subtle">
+                    <span class="status-dot pulse"></span>
+                    <span>System Online</span>
+                </div>
+                <button class="btn-icon glass-subtle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </button>
+                <button class="btn-icon glass-subtle theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"></path>
+                    </svg>
+                </button>
+                <button class="btn-logout">
+                    <span>Logout</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard Container -->
+    <div class="dashboard-container">
+        
+        <!-- Asset Identity Header -->
+        <header class="asset-header glass-effect slide-up visible" style="--delay: 0.1s">
+            <div class="asset-identity">
+                <div class="asset-icon">
+                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <rect width="56" height="56" rx="16" fill="url(#assetGradient)"></rect>
+                        <text x="28" y="36" font-size="24" fill="white" text-anchor="middle" font-weight="700" font-family="Inter">R</text>
+                        <defs>
+                            <linearGradient id="assetGradient" x1="0" y1="0" x2="56" y2="56">
+                                <stop offset="0%" stop-color="#667eea"></stop>
+                                <stop offset="100%" stop-color="#764ba2"></stop>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="asset-info">
+                    <h1 class="asset-name"><span id="company-name">Reliance Industries Ltd.</span></h1>
+                    <p class="asset-meta">
+                        <span class="ticker" id="company-ticker">RELIANCE.NS</span>
+                        <span class="separator">•</span>
+                        <span class="industry" id="company-sector">Energy &amp; Retail • NSE</span>
+                        <span class="separator">•</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="price-section">
+                <div class="current-price"><span class="currency-symbol">₹</span><span id="live-price-display">2,847.50</span></div>
+                <div class="price-change positive">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                    <span>+42.30 (+1.51%)</span>
+                </div>
+                <div class="price-subtext">Today</div>
+            </div>
+
+        </header>
+
+        <!-- Main Grid Layout -->
+        <div class="dashboard-grid">
+            
+            <!-- Left Column -->
+            <div class="left-column">
+                
+                <!-- Interactive Price Chart -->
+                <section class="chart-section glass-effect slide-up visible" style="--delay: 0.2s">
+                    <div class="section-header">
+                        <div class="header-left">
+                            <h2 class="section-title">Price Movement</h2>
+                            <p class="section-subtitle">Last 30 Days Analysis</p>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-line primary"></span>
+                                <span>Price</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-line secondary"></span>
+                                <span>5-Day SMA</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="priceChart" width="1994" height="800" style="display: block; box-sizing: border-box; height: 400px; width: 997px;"></canvas>
+                    </div>
+                </section>
+
+                <!-- Market News & Sentiment -->
+                <section class="news-section glass-effect slide-up visible" style="--delay: 0.3s">
+                    <div class="section-header">
+                        <div class="header-left">
+                            <h2 class="section-title">Market Intelligence</h2>
+                            <p class="section-subtitle">AI-Powered News Sentiment</p>
+                        </div>
+                        <span class="update-badge glass-subtle">
+                            <span class="pulse-dot"></span>
+                            Updated 2 min ago
+                        </span>
+                    </div>
+                    
+                    <div class="news-feed" id="news-container">
+                        <article class="news-item">
+                            <div class="news-source">
+                                <img src="https://logo.clearbit.com/ft.com" alt="FT" class="source-logo" style="display: none;">
+                                <span>Financial Times</span>
+                                <span class="news-time">1h ago</span>
+                            </div>
+                            <h3 class="news-title">Reliance announces strategic partnership with renewable energy sector</h3>
+                            <p class="news-excerpt">The conglomerate aims to invest $10B in green energy initiatives over the next five years...</p>
+                            <div class="news-footer">
+                                <span class="sentiment-badge positive">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                                    </svg>
+                                    POSITIVE
+                                </span>
+                                <span class="confidence-score">Confidence: 92%</span>
+                            </div>
+                        </article>
+
+                        <article class="news-item">
+                            <div class="news-source">
+                                <img src="https://logo.clearbit.com/bloomberg.com" alt="Bloomberg" class="source-logo" style="display: none;">
+                                <span>Bloomberg</span>
+                                <span class="news-time">3h ago</span>
+                            </div>
+                            <h3 class="news-title">Q4 earnings exceed market expectations with strong retail performance</h3>
+                            <p class="news-excerpt">Retail division shows 23% YoY growth, digital commerce up 45%...</p>
+                            <div class="news-footer">
+                                <span class="sentiment-badge positive">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                                    </svg>
+                                    POSITIVE
+                                </span>
+                                <span class="confidence-score">Confidence: 87%</span>
+                            </div>
+                        </article>
+
+                        <article class="news-item">
+                            <div class="news-source">
+                                <img src="https://logo.clearbit.com/reuters.com" alt="Reuters" class="source-logo" style="display: none;">
+                                <span>Reuters</span>
+                                <span class="news-time">5h ago</span>
+                            </div>
+                            <h3 class="news-title">Industry analysts maintain neutral outlook amid market volatility</h3>
+                            <p class="news-excerpt">Mixed signals from global markets prompt cautious stance...</p>
+                            <div class="news-footer">
+                                <span class="sentiment-badge neutral">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                    </svg>
+                                    NEUTRAL
+                                </span>
+                                <span class="confidence-score">Confidence: 78%</span>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                
+                <!-- Trust Score Verdict -->
+                <section class="trust-verdict glass-effect slide-up visible" style="--delay: 0.2s">
+                    <div class="section-header">
+                        <div class="header-left">
+                            <h2 class="section-title">Trust Engine Verdict</h2>
+                            <p class="section-subtitle">AI-Powered Analysis</p>
+                        </div>
+                        <svg class="trust-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#trustGradient)"></path>
+                            <defs>
+                                <linearGradient id="trustGradient" x1="2" y1="2" x2="22" y2="22">
+                                    <stop offset="0%" stop-color="#667eea"></stop>
+                                    <stop offset="100%" stop-color="#764ba2"></stop>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    
+                    <div class="trust-score-display">
+                        <svg class="score-circle" viewBox="0 0 200 200">
+                            <defs>
+                                <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#667eea"></stop>
+                                    <stop offset="50%" stop-color="#764ba2"></stop>
+                                    <stop offset="100%" stop-color="#f093fb"></stop>
+                                </linearGradient>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="4" result="coloredBlur"></feGaussianBlur>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"></feMergeNode>
+                                        <feMergeNode in="SourceGraphic"></feMergeNode>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(102, 126, 234, 0.1)" stroke-width="16"></circle>
+                            <circle cx="100" cy="100" r="80" fill="none" stroke="url(#scoreGradient)" stroke-width="16" stroke-dasharray="502" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 100 100)" class="score-progress" filter="url(#glow)" style="stroke-dashoffset: 100;"></circle>
+                        </svg>
+                        <div class="score-content">
+                            <div class="score-value"><span id="trust-score-display">82</span></div>
+                            <div class="score-max">/100</div>
+                            <div class="score-label">Trust Score</div>
+                        </div>
+                    </div>
+
+                    <div class="signal-badge bullish">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 4L18 16H6L12 4Z" fill="currentColor"></path>
+                        </svg>
+                        <span id="prediction-display">BULLISH SIGNAL</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 4L18 16H6L12 4Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
+
+                    <div class="verdict-box glass-subtle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <p class="verdict-text">
+                            <strong>High conviction setup</strong> with strong technical momentum and positive sentiment alignment. 
+                            Multiple indicators confirm upward trend continuation probability.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- 5-Pillar Diagnostics -->
+                <section class="diagnostics-section glass-effect slide-up visible" style="--delay: 0.3s">
+                    <div class="section-header">
+                        <div class="header-left">
+                            <h2 class="section-title">Trust Pillars Breakdown</h2>
+                            <p class="section-subtitle">5-Factor Analysis</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pillars-container">
+                        <div class="pillar-item">
+                            <div class="pillar-header">
+                                <div class="pillar-info">
+                                    <span class="pillar-name">Model Confidence</span>
+                                    <span class="pillar-desc">AI prediction certainty</span>
+                                </div>
+                                <span class="pillar-score"><span id="score-confidence">26</span><span class="pillar-max">/30</span></span>
+                            </div>
+                            <div class="pillar-bar-container">
+                                <div class="pillar-bar">
+                                    <div class="pillar-fill" style="--fill: 86.67%; --color: #667eea; width: 86.67%;"></div>
+                                </div>
+                                <span class="pillar-percent" id="pct-confidence">87%</span>
+                            </div>
+                        </div>
+
+                        <div class="pillar-item">
+                            <div class="pillar-header">
+                                <div class="pillar-info">
+                                    <span class="pillar-name">News Sentiment</span>
+                                    <span class="pillar-desc">FinBERT NLP analysis</span>
+                                </div>
+                                <span class="pillar-score"><span id="score-sentiment">21</span><span class="pillar-max">/25</span></span>
+                            </div>
+                            <div class="pillar-bar-container">
+                                <div class="pillar-bar">
+                                    <div class="pillar-fill" style="--fill: 84%; --color: #48bb78; width: 84%;"></div>
+                                </div>
+                                <span class="pillar-percent" id="pct-sentiment">84%</span>
+                            </div>
+                        </div>
+
+                        <div class="pillar-item">
+                            <div class="pillar-header">
+                                <div class="pillar-info">
+                                    <span class="pillar-name">Volatility Penalty</span>
+                                    <span class="pillar-desc">Risk adjustment factor</span>
+                                </div>
+                                <span class="pillar-score"><span id="score-volatility">16</span><span class="pillar-max">/20</span></span>
+                            </div>
+                            <div class="pillar-bar-container">
+                                <div class="pillar-bar">
+                                    <div class="pillar-fill" style="--fill: 80%; --color: #ed8936; width: 80%;"></div>
+                                </div>
+                                <span class="pillar-percent" id="pct-volatility">80%</span>
+                            </div>
+                        </div>
+
+                        <div class="pillar-item">
+                            <div class="pillar-header">
+                                <div class="pillar-info">
+                                    <span class="pillar-name">Trend Strength</span>
+                                    <span class="pillar-desc">Momentum indicators</span>
+                                </div>
+                                <span class="pillar-score"><span id="score-trend">12</span><span class="pillar-max">/15</span></span>
+                            </div>
+                            <div class="pillar-bar-container">
+                                <div class="pillar-bar">
+                                    <div class="pillar-fill" style="--fill: 80%; --color: #9f7aea; width: 80%;"></div>
+                                </div>
+                                <span class="pillar-percent" id="pct-trend">80%</span>
+                            </div>
+                        </div>
+
+                        <div class="pillar-item">
+                            <div class="pillar-header">
+                                <div class="pillar-info">
+                                    <span class="pillar-name">Feature Health (SHAP)</span>
+                                    <span class="pillar-desc">Data quality score</span>
+                                </div>
+                                <span class="pillar-score"><span id="score-health">7</span><span class="pillar-max">/10</span></span>
+                            </div>
+                            <div class="pillar-bar-container">
+                                <div class="pillar-bar">
+                                    <div class="pillar-fill" style="--fill: 70%; --color: #38b2ac; width: 70%;"></div>
+                                </div>
+                                <span class="pillar-percent" id="pct-health">70%</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+
+</body></html>
